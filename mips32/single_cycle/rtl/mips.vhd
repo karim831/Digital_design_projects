@@ -7,6 +7,6 @@ entity mips is  -- mips 32_bit single_cycle_processor
     );
 end entity;
 
-architecture rtl of mips32_single_cycle is
+architecture rtl of mips is
 
 end architecture;
