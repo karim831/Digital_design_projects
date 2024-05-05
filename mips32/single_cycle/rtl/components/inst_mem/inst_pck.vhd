@@ -157,7 +157,7 @@ package body inst_pck is
         rt : std_logic_vector(4 downto 0) := (others => '0')
     )return std_logic_vector is
             begin
-                return "000000" & rs & rt & rd & "XXXXX" & func;
+                return "000000" & rs & rt & rd & "00000" & func;
     end function;
 
     -- I-type instruction functions initalization
