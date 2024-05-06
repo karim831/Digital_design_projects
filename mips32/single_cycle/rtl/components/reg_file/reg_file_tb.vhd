@@ -10,10 +10,10 @@ architecture rtl of reg_file_tb is
     constant ADR_WIDTH_TB : integer := 5;
 
     -- inputs :
-    signal read_reg1_tb : std_logic_vector(ADR_WIDTH_TB-1 downto 0) := "01010";
-    signal read_reg2_tb : std_logic_vector(ADR_WIDTH_TB-1 downto 0) := "01100";
-    signal write_reg_tb : std_logic_vector(ADR_WIDTH_TB-1 downto 0) := "00101";
-    signal write_data_tb : std_logic_vector(REG_WIDTH_TB-1 downto 0) := x"00003B51";
+    signal read_reg1_tb : std_logic_vector(ADR_WIDTH_TB-1 downto 0) := std_logic_vector(to_unsigned(10,ADR_WIDTH_TB));
+    signal read_reg2_tb : std_logic_vector(ADR_WIDTH_TB-1 downto 0) := std_logic_vector(to_unsigned(12,ADR_WIDTH_TB));
+    signal write_reg_tb : std_logic_vector(ADR_WIDTH_TB-1 downto 0) := std_logic_vector(to_unsigned(5,ADR_WIDTH_TB));
+    signal write_data_tb : std_logic_vector(REG_WIDTH_TB-1 downto 0) := std_logic_vector(to_unsigned(15185,REG_WIDTH_TB));
     signal write_en_tb : std_logic := '0';
 
     -- outputs :
@@ -43,8 +43,8 @@ architecture rtl of reg_file_tb is
                 if(write_en_tb = '1') then 
                     read_reg1_tb <= write_reg_tb;
                 else
-                    read_reg1_tb <= std_logic_vector(unsigned(read_reg1_tb) + "00001");
-                    read_reg2_tb <= std_logic_vector(unsigned(read_reg2_tb) + "00001");
+                    read_reg1_tb <= std_logic_vector(unsigned(read_reg1_tb) + to_unsigned(1,ADR_WIDTH_TB));
+                    read_reg2_tb <= std_logic_vector(unsigned(read_reg2_tb) + to_unsigned(1,ADR_WIDTH_TB));
                 end if;
         end process;
         writing : process is
@@ -52,7 +52,7 @@ architecture rtl of reg_file_tb is
                 wait for 300 ps;
                 write_en_tb <= not write_en_tb;
                 wait for 100 ps;
-                write_data_tb <= std_logic_vector(unsigned(write_data_tb)+x"00000001");
+                write_data_tb <= std_logic_vector(unsigned(write_data_tb)+to_unsigned(1,REG_WIDTH_TB));
         end process;
 
 end architecture;

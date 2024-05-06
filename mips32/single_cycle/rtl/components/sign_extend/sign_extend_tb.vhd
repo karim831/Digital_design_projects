@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 entity sign_extend_tb is
 end entity;
 
@@ -26,9 +27,9 @@ architecture rtl of sign_extend_tb is
         process is
             begin 
                 wait for 100 ps;
-                imm_const_tb <= x"5FFF";
+                imm_const_tb <= std_logic_vector(to_unsigned(24575,IMM_WIDTH_TB));
                 wait for 100 ps;
-                imm_const_tb <= x"A000";
+                imm_const_tb <= std_logic_vector(to_unsigned(40960,IMM_WIDTH_TB));
                 wait;
             end process;
 end architecture;

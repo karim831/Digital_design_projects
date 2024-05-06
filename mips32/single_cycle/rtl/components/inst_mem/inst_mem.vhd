@@ -16,27 +16,31 @@ end entity;
 architecture rtl of inst_mem is
     type ram_type is array(0 to 15) of std_logic_vector(31 downto 0); -- <16(changeable)> 4_byte word ram
     signal ram : ram_type := (
-        x"00000000",
+        (others => 'X'),
         r_inst(addr,s3,s1,s2), 
-        j_inst(j,std_logic_vector(to_unsigned(14,26))), 
-        x"00000000", 
-        x"00000000", 
-        x"00000000", 
-        x"00000000", 
-        x"00000000", 
-        x"00000000", 
-        x"00000000", 
-        x"00000000", 
-        x"00000000", 
-        x"00000000", 
-        x"00000000", 
-        x"00000000", 
-        x"00000000"
+        j_inst(j,14), 
+        i_inst(andi,t0,t2,200), 
+        (others => 'X'), 
+        (others => 'X'), 
+        (others => 'X'), 
+        (others => 'X'), 
+        (others => 'X'), 
+        (others => 'X'), 
+        (others => 'X'), 
+        (others => 'X'), 
+        (others => 'X'), 
+        (others => 'X'), 
+        (others => 'X'), 
+        (others => 'X')
     );
     begin
         process(read_add) is
             begin
-                inst <= ram(to_integer(unsigned(read_add))/4);
+                if(read_add < std_logic_vector(to_unsigned(64,ADR_WIDTH))) then
+                    inst <= ram(to_integer(unsigned(read_add))/4);
+                else
+                    inst <= (others => 'U');
+                end if;
         end process;
 end architecture;
 

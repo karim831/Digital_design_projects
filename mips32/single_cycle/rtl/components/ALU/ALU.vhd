@@ -10,7 +10,7 @@ entity alu is
     port(
         in1 : in std_logic_vector(INPUT_WIDTH-1 downto 0);
         in2 : in std_logic_vector(INPUT_WIDTH-1 downto 0);
-        control : in std_logic_vector(3 downto 0);
+        control : in std_logic_vector(5 downto 0);
         alu_result : out std_logic_vector(INPUT_WIDTH-1 downto 0);
         zero : out std_logic
     );
@@ -22,24 +22,24 @@ architecture rtl of alu is
         process(in1,in2,control) is
             begin
                 case control is
-                    when "0000" =>  -- logical and
+                    when (others => '0') =>  -- logical and
                         result <= in1 and in2;
-                    when "0001" =>  -- logical or
+                    when (0 to control'length-2 => '0') & '1' =>  -- logical or
                         result <= in1 or in2;
-                    when "0010" =>  -- add
+                    when (0 to control'length-3 => '0') & "10"=>  -- add
                         result <= std_logic_vector(unsigned(in1)+unsigned(in2));
-                    when "0011" =>  -- sub
+                    when (0 to control'length-3 => '0') & "11" =>  -- sub
                         result <= std_logic_vector(unsigned(in1)-unsigned(in2));
-                    when "0100" =>  -- set lower than
+                    when (0 to control'length-4 => '0') & "100"=>  -- set lower than
                         if(in1 < in2) then
-                            result <= x"00000001";
+                            result <= std_logic_vector(to_unsigned(1,INPUT_WIDTH));
                         else
-                            result <= x"00000000";
+                            result <= (others => '0');
                         end if;
-                    when "0101" =>  -- logic nor
+                    when (0 to control'length-4 => '0') & "101" =>  -- logic nor
                         result <= in1 nor in2;
                     when others => null;    
-                        result <= x"00000000";
+                        result <= (others => 'X');
                 end case;
         end process;
         alu_result <= result;

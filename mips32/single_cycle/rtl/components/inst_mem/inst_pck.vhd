@@ -47,24 +47,25 @@
 --      bne  $rt,$rs,L(addr)    move to this instruction
 -- second instruction code :
 --      |opcode  |rs_5bit  |rt_5bit  |const_imm(16bit)  |
---      |000000  |reg_add  |reg_add  |const_number      |andi      
---      |000001  |reg_add  |reg_add  |const_number      |ori    
---      |000010  |reg_add  |reg_add  |const_number      |addi    
---      |000011  |reg_add  |reg_add  |const_number      |subi 
---      |000100  |reg_add  |reg_add  |const_number      |slti
---      |000101  |reg_add  |reg_add  |const_number      |nori
---      |000110  |reg_add  |reg_add  |const_number      |lw  
---      |000111  |reg_add  |reg_add  |const_number      |sw  
---      |001000  |reg_add  |reg_add  |const_number      |bne range -128KB to 127KB from next_inst
+--      |000001  |reg_add  |reg_add  |const_number      |andi      
+--      |000010  |reg_add  |reg_add  |const_number      |ori    
+--      |000011  |reg_add  |reg_add  |const_number      |addi    
+--      |000100  |reg_add  |reg_add  |const_number      |subi 
+--      |000101  |reg_add  |reg_add  |const_number      |slti
+--      |000110  |reg_add  |reg_add  |const_number      |nori
+--      |000111  |reg_add  |reg_add  |const_number      |lw  
+--      |001000  |reg_add  |reg_add  |const_number      |sw  
+--      |001001  |reg_add  |reg_add  |const_number      |bne range -128KB to 127KB from next_inst
 --J_type instruction code and assemply
 --first assemply :
 --      j inst_addr
 --seconde instruction code :
 --      |opcode  |instr_add(26bit) |                                  
---      |001001  |const_number     |256 MB access
+--      |001010  |const_number     |256 MB access
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 package inst_pck is
     -- registers in reg_file
     constant ZERO : std_logic_vector(4 downto 0) := "00000"; 
@@ -108,17 +109,17 @@ package inst_pck is
     constant sltr  : std_logic_vector(5 downto 0) := "000100";
     constant norr  : std_logic_vector(5 downto 0) := "000101";
     -- I_type op_codes 
-    constant andi : std_logic_vector(5 downto 0) := "000000";
-    constant ori  : std_logic_vector(5 downto 0) := "000001";
-    constant addi : std_logic_vector(5 downto 0) := "000010";
-    constant subi : std_logic_vector(5 downto 0) := "000011";
-    constant slti : std_logic_vector(5 downto 0) := "000100";
-    constant nori : std_logic_vector(5 downto 0) := "000101";
-    constant lw   : std_logic_vector(5 downto 0) := "000110";
-    constant sw   : std_logic_vector(5 downto 0) := "000111";
-    constant bne  : std_logic_vector(5 downto 0) := "001000";
+    constant andi : std_logic_vector(5 downto 0) := "000001";
+    constant ori  : std_logic_vector(5 downto 0) := "000010";
+    constant addi : std_logic_vector(5 downto 0) := "000011";
+    constant subi : std_logic_vector(5 downto 0) := "000100";
+    constant slti : std_logic_vector(5 downto 0) := "000101";
+    constant nori : std_logic_vector(5 downto 0) := "000110";
+    constant lw   : std_logic_vector(5 downto 0) := "000111";
+    constant sw   : std_logic_vector(5 downto 0) := "001000";
+    constant bne  : std_logic_vector(5 downto 0) := "001001";
     -- J_type op_codes
-    constant j    : std_logic_vector(5 downto 0) := "001001";
+    constant j    : std_logic_vector(5 downto 0) := "001010";
 
 
 
@@ -136,12 +137,12 @@ package inst_pck is
         op_code : std_logic_vector(5 downto 0) := (others => '0');
         rt : std_logic_vector(4 downto 0) := (others => '0');
         rs : std_logic_vector(4 downto 0) := (others => '0');
-        const_imm : std_logic_vector(15 downto 0) := (others => '0')
+        const_imm : integer range -2**15 to 2**15-1 := 0 
     )return std_logic_vector;
     -- J-type instruction functions declaration
     function j_inst(
         op_code : std_logic_vector(5 downto 0) := (others => '0');
-        inst_addr : std_logic_vector(25 downto 0)  := (others => '0')
+        inst_addr : integer range 0 to 2**26-1 := 0
     )return std_logic_vector;
 
     --------------------------------------------------------------------
@@ -157,7 +158,7 @@ package body inst_pck is
         rt : std_logic_vector(4 downto 0) := (others => '0')
     )return std_logic_vector is
             begin
-                return "000000" & rs & rt & rd & "00000" & func;
+                return "000000" & rs & rt & rd & "XXXXX" & func;
     end function;
 
     -- I-type instruction functions initalization
@@ -165,19 +166,19 @@ package body inst_pck is
         op_code : std_logic_vector(5 downto 0) := (others => '0');
         rt : std_logic_vector(4 downto 0) := (others => '0');
         rs : std_logic_vector(4 downto 0) := (others => '0');
-        const_imm : std_logic_vector(15 downto 0) := (others => '0')
+        const_imm : integer range -2**15 to 2**15-1 := 0
     )return std_logic_vector is
         begin
-            return op_code & rs & rt & const_imm;
+            return op_code & rs & rt & std_logic_vector(to_unsigned(const_imm,16));
     end function;
 
     -- J-type instruction functions initalization
     function j_inst(
         op_code : std_logic_vector(5 downto 0) := (others => '0');
-        inst_addr : std_logic_vector(25 downto 0)  := (others => '0')
+        inst_addr : integer range 0 to 2**26-1 := 0 
     )return std_logic_vector is
         begin
-            return op_code & inst_addr;
+            return op_code & std_logic_vector(to_unsigned(inst_addr,26));
     end function;
    
 

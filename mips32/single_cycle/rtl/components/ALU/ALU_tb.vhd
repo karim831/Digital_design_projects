@@ -8,9 +8,9 @@ architecture rtl of alu_tb is
     -- constants :
     constant INPUT_WIDTH_TB : integer := 32;
     -- inputs :
-    signal in1_tb : std_logic_vector(INPUT_WIDTH_TB-1 downto 0) := x"000000FA";
-    signal in2_tb : std_logic_vector(INPUT_WIDTH_TB-1 downto 0) := x"0000008B";
-    signal control_tb : std_logic_vector(3 downto 0) := "0000";
+    signal in1_tb : std_logic_vector(INPUT_WIDTH_TB-1 downto 0) := std_logic_vector(to_unsigned(250,INPUT_WIDTH_TB));
+    signal in2_tb : std_logic_vector(INPUT_WIDTH_TB-1 downto 0) := std_logic_vector(to_unsigned(139,INPUT_WIDTH_TB));
+    signal control_tb : std_logic_vector(5 downto 0) := (others => '0');
     
     -- outputs :
     signal alu_result_tb : std_logic_vector(INPUT_WIDTH_TB-1 downto 0);
@@ -32,13 +32,10 @@ architecture rtl of alu_tb is
     process is 
         begin 
             wait for 100 ps;
-            if(control_tb < "0111") then 
-                control_tb <= std_logic_vector(unsigned(control_tb) + "0001");
+            if(control_tb < (0 to control_tb'length-4 => '0') & "111") then 
+                control_tb <= std_logic_vector(unsigned(control_tb) + to_unsigned(1,control_tb'length));
             else 
-                control_tb <= "0000";
+                control_tb <= (others => '0');
             end if;
     end process;
-
-
-
 end architecture;

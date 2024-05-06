@@ -1,41 +1,41 @@
 library ieee;
 use ieee.std_logic_1164.all;
-
+use ieee.numeric_std.all;
 entity mux_tb is 
 end entity;
 
 architecture rtl of mux_tb is 
     -- constans :
-    constant tb_WIDTH : integer := 32;
+    constant WIDTH_TB : integer := 32;
     -- inputs :
-    signal tb_in1,tb_in2 : std_logic_vector(tb_WIDTH-1 downto 0) := (others => '0');
-    signal tb_sel : std_logic := '0';
+    signal in1_tb,in2_tb : std_logic_vector(WIDTH_TB-1 downto 0) := (others => '0');
+    signal sel_tb : std_logic := '0';
     -- outputs :
-    signal tb_o : std_logic_vector(tb_WIDTH-1 downto 0);
+    signal o_tb : std_logic_vector(WIDTH_TB-1 downto 0);
 
     begin
     -- porting :
     mux_tb : entity work.mux(rtl) 
         generic map(
-            WIDTH => tb_WIDTH
+            WIDTH => WIDTH_TB
         )
         port map(
-            in1 => tb_in1,
-            in2 => tb_in2,
-            sel => tb_sel,
-            o   => tb_o
+            in1 => in1_tb,
+            in2 => in2_tb,
+            sel => sel_tb,
+            o   => o_tb
         );
 
 
     -- stimulus process
     stim_porcess : process 
         begin
-            tb_in1 <= x"AAAAFFFF";
-            tb_in2 <= x"FFFFAAAA";
+            in1_tb <= std_logic_vector(to_unsigned(2220,WIDTH_TB));
+            in2_tb <= std_logic_vector(to_unsigned(5023,WIDTH_TB));
 
-            tb_sel <= '1';
+            sel_tb <= '1';
             wait for 100 ps;
-            tb_sel <= '0';
+            sel_tb <= '0';
             wait;
         end process;
 end architecture;
