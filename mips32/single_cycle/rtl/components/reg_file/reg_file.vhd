@@ -9,9 +9,13 @@ entity reg_file is
         ADR_WIDTH : integer := 5
     );
     port(
-        read_reg1,read_reg2,write_reg : in std_logic_vector(ADR_WIDTH-1 downto 0);
-        write_data : in std_logic_vector(REG_WIDTH-1 downto 0);
-        write_en :in std_logic;
+        clk_read : in std_logic := '0';
+        read_reg1,read_reg2 : in std_logic_vector(ADR_WIDTH-1 downto 0) := (others => '0'); 
+        
+        clk_write,write_en :in std_logic := '0';
+        write_reg : in std_logic_vector(ADR_WIDTH-1 downto 0) := (others => '0');
+        write_data : in std_logic_vector(REG_WIDTH-1 downto 0) := (others => '0');
+        
         read_data1,read_data2 : out std_logic_vector(REG_WIDTH-1 downto 0)
     );
 end entity;
@@ -20,46 +24,52 @@ architecture rtl of reg_file is
     type reg_file_type is array(0 to 2**ADR_WIDTH-1) of std_logic_vector(REG_WIDTH-1 downto 0);
     signal reg_file : reg_file_type := (
         (others => '0'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X'),
-        (others => 'X')
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0'),
+        (others => '0')
     );
     begin
-        read_data1 <= reg_file(to_integer(unsigned(read_reg1)));
-        read_data2 <= reg_file(to_integer(unsigned(read_reg2)));
-
-        process(write_en,write_data) is
+        READ : process(clk_read) is
+        begin
+            if(rising_edge(clk_read)) then 
+                read_data1 <= reg_file(to_integer(unsigned(read_reg1)));
+                read_data2 <= reg_file(to_integer(unsigned(read_reg2)));
+            end if;
+        end process;
+        WRITE : process(clk_write) is
             begin
-                if(write_en = '1') then
-                    reg_file(to_integer(unsigned(write_reg))) <= write_data;
+                if(rising_edge(clk_write)) then 
+                    if(write_en = '1' and to_integer(unsigned(write_reg)) /= 0) then
+                        reg_file(to_integer(unsigned(write_reg))) <= write_data;
+                    end if;
                 end if;
         end process;
 end architecture;

@@ -8,9 +8,9 @@ entity alu is
         INPUT_WIDTH : integer := 32
     );
     port(
-        in1 : in std_logic_vector(INPUT_WIDTH-1 downto 0);
-        in2 : in std_logic_vector(INPUT_WIDTH-1 downto 0);
-        control : in std_logic_vector(5 downto 0);
+        in1 : in std_logic_vector(INPUT_WIDTH-1 downto 0) := (others => '0');
+        in2 : in std_logic_vector(INPUT_WIDTH-1 downto 0) :=  (others => '0');
+        control : in std_logic_vector(5 downto 0) := (others => '0');
         alu_result : out std_logic_vector(INPUT_WIDTH-1 downto 0);
         zero : out std_logic
     );
@@ -39,7 +39,7 @@ architecture rtl of alu is
                     when (0 to control'length-4 => '0') & "101" =>  -- logic nor
                         result <= in1 nor in2;
                     when others => null;    
-                        result <= (others => 'X');
+                        result <= (others => '0');
                 end case;
         end process;
         alu_result <= result;

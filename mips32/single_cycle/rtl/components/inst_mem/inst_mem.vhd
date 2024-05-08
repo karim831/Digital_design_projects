@@ -16,22 +16,22 @@ end entity;
 architecture rtl of inst_mem is
     type ram_type is array(0 to 15) of std_logic_vector(31 downto 0); -- <16(changeable)> 4_byte word ram
     signal ram : ram_type := (
-        (others => 'X'),
-        r_inst(addr,s3,s1,s2), 
-        j_inst(j,14), 
-        i_inst(andi,t0,t2,200), 
-        (others => 'X'), 
-        (others => 'X'), 
-        (others => 'X'), 
-        (others => 'X'), 
-        (others => 'X'), 
-        (others => 'X'), 
-        (others => 'X'), 
-        (others => 'X'), 
-        (others => 'X'), 
-        (others => 'X'), 
-        (others => 'X'), 
-        (others => 'X')
+        i_inst(addi,s0,zero,5), 
+        i_inst(addi,s1,zero,6), 
+        r_inst(addr,s1,s0,s1), 
+        j_inst(j,2),    
+        (others => '0'), 
+        (others => '0'), 
+        (others => '0'), 
+        (others => '0'), 
+        (others => '0'), 
+        (others => '0'), 
+        (others => '0'), 
+        (others => '0'), 
+        (others => '0'), 
+        (others => '0'), 
+        (others => '0'), 
+        (others => '0')
     );
     begin
         process(read_add) is
@@ -39,7 +39,7 @@ architecture rtl of inst_mem is
                 if(read_add < std_logic_vector(to_unsigned(64,ADR_WIDTH))) then
                     inst <= ram(to_integer(unsigned(read_add))/4);
                 else
-                    inst <= (others => 'U');
+                    inst <= (others => '0');
                 end if;
         end process;
 end architecture;
