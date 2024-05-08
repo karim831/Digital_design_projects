@@ -11,61 +11,68 @@ end entity;
 
 architecture rtl of mips is
     ----------------------------------------------------------------------
-    --                      FETCH_INSTRUCTION                           --
-    ----------------------------------------------------------------------
-    signal pc_out : std_logic_vector(31 downto 0) := (others => '0');
-    ----------------------------------------------------------------------
-    ----------------------------------------------------------------------
-    --                        NXT_INSTRUCTION                           --
-    ----------------------------------------------------------------------
-    signal adder1_out,adder2_out : std_logic_vector(31 downto 0);
-    signal mux1_out,mux2_out : std_logic_vector(31 downto 0);
-    ----------------------------------------------------------------------
-    
-    
+    --                              PC                                  --
+    ----------------------------------------------------------------------    
+    signal pc_in,pc_out : 
+        std_logic_vector(31 downto 0) := (others => '0');
     ----------------------------------------------------------------------
 
 
     ----------------------------------------------------------------------
-    --                       INST_DEC && REG_FET                        --
+    --                           INST_MEM                               --
+    ----------------------------------------------------------------------    
+    signal  im_read_adr :
+        std_logic_vector(31 downto 0) := (others => '0');
+    signal im_instruction :
+        std_logic_vector(31 downto 0);
     ----------------------------------------------------------------------
-    signal inst_out : std_logic_vector(31 downto 0);
-    signal mux_out_reg_file1 : std_logic_vector(4 downto 0);
-    signal reg_file_out1,reg_file_out2 : std_logic_vector(31 downto 0); 
+
+    ----------------------------------------------------------------------
+    --                        REG_FILE                                  --
+    ----------------------------------------------------------------------    
+    signal rf_read_reg1,rf_read_reg2,rf_write_reg : 
+        std_logic_vector(4 downto 0);
+    signal rf_read_data1,rf_read_data2,rf_write_data :
+        std_logic_vector(31 downto 0);
+    signal rf_reg_write :
+        std_logic;
+    ----------------------------------------------------------------------
+
+    ----------------------------------------------------------------------
+    --                             ALU                                  --
+    ----------------------------------------------------------------------
+    signal alu_src1,alu_src2,alu_result : 
+        std_logic_vector(31 downto 0);
+    signal alu_bcond : 
+        std_logic;
+    signal alu_ctrl :
+        std_logic_vector(5 downto 0);  
+    ----------------------------------------------------------------------
 
     signal sign_extend_out : std_logic_vector(31 downto 0);
-    ----------------------------------------------------------------------
 
     ----------------------------------------------------------------------
-    --                   EXECUTE && EVALUTE_MEM_ADD                     --
+    --                           DATA_MEM                               --
+    ---------------------------------------------------------------------- 
+    signal dm_adr,dm_read_data,dm_write_data : 
+        std_logic_vector(31 downto 0);
     ----------------------------------------------------------------------
-    signal alu_ctrl_out : std_logic_vector(5 downto 0);
-    signal mux_out_alu,alu_out : std_logic_vector(31 downto 0);
-    signal alu_zero : std_logic;
-
-    ----------------------------------------------------------------------
-
-
-    ----------------------------------------------------------------------
-    --                       STORE && WRITE_BACK                        --
-    ----------------------------------------------------------------------
-    signal data_mem_out : std_logic_vector(31 downto 0);
     
-    signal mux_out_reg_file2 : std_logic_vector(31 downto 0);
-    ----------------------------------------------------------------------
-
     ----------------------------------------------------------------------
     --                          MAIN_CONTROL                            --
     ----------------------------------------------------------------------
-    
     signal alu_op : std_logic_vector(5 downto 0);
-    signal reg_dst,jump,branch ,mem_read,mem_to_reg,mem_write,alu_src,reg_write : std_logic; 
+    signal reg_dst,jump,branch ,mem_read,mem_to_reg,
+        mem_write,alu_src,reg_write : 
+            std_logic; 
     ----------------------------------------------------------------------
-
     
-    
-
-
+    ----------------------------------------------------------------------
+    --                        NXT_INSTRUCTION                           --
+    ----------------------------------------------------------------------
+    signal main_adder_out,br_adder_out : std_logic_vector(31 downto 0);
+    signal br_mux_out : std_logic_vector(31 downto 0);
+    ----------------------------------------------------------------------
 
 
     begin    
@@ -75,7 +82,7 @@ architecture rtl of mips is
                 if(reset = '1') then 
                     pc_out <= (others => '0');
                 else if(rising_edge(clk)) then
-                    pc_out <= mux2_out;
+                    pc_out <= pc_in;
                 end if;
                 end if;
         end process;
@@ -85,7 +92,7 @@ architecture rtl of mips is
     --                      FETCH_INSTRUCTION                           --
     ----------------------------------------------------------------------
 
-        ADDR_PC_PLUS_4 : entity work.alu(rtl) 
+        MAIN_ADDER : entity work.alu(rtl) 
         generic map(
             INPUT_WIDTH => 32
         )
@@ -95,22 +102,22 @@ architecture rtl of mips is
             in2 => std_logic_vector(to_unsigned(4,32)),
             control => "000010",
             -- outputs
-            alu_result => adder1_out,
+            alu_result => main_adder_out,
             zero => open
         );
 
-        ADD_BRANCH : 
+        ADDER_BRANCH : 
         entity work.alu(rtl) 
         generic map(
             INPUT_WIDTH => 32
         )
         port map(
             -- inputs
-            in1 => adder1_out,
+            in1 => main_adder_out,
             in2 => (sign_extend_out sll 2),
             control => "000010",
             -- outputs
-            alu_result => adder2_out,
+            alu_result => br_adder_out,
             zero => open
         );
 
@@ -121,11 +128,11 @@ architecture rtl of mips is
         )
         port map(
             -- inputs
-            in1 => adder1_out,
-            in2 => adder2_out,
+            in1 => main_adder_out,
+            in2 => br_adder_out,
             sel => '0',             --(branch and alu_zero),
             -- outputs
-            o => mux1_out
+            o => br_mux_out
         );
 
         MUX_JUMP :
@@ -135,11 +142,11 @@ architecture rtl of mips is
         )
         port map(
             -- inputs
-            in1 => mux1_out,
-            in2 => (adder1_out(31 downto 28) & (("00" & inst_out(25 downto 0))  sll 2)),
+            in1 => br_mux_out,
+            in2 => (main_adder_out(31 downto 28) & (("00" & im_instruction(25 downto 0))  sll 2)),
             sel => jump,
             -- outputs
-            o => mux2_out
+            o => pc_in
         );
 
         INST_MEM : entity work.inst_mem(rtl) 
@@ -149,10 +156,11 @@ architecture rtl of mips is
         )
         port map(
             -- inputs
-            read_add => pc_out,
+            read_add => im_read_adr,
             -- outputs
-            inst => inst_out
+            inst => im_instruction
         );
+        im_read_adr <= pc_out;
         
     -----------------------------------------------------------------------------------------
 
@@ -162,7 +170,7 @@ architecture rtl of mips is
     ----------------------------------------------------------------------
         MAIN_CONTROL : entity work.main_control(rtl) 
         port map(
-            op_code => inst_out(31 downto 26),
+            op_code => im_instruction(31 downto 26),
             ctrls(13) => reg_dst,
             ctrls(12) => jump,
             ctrls(11) => branch,
@@ -175,7 +183,7 @@ architecture rtl of mips is
         );
 
 
-    ------------------------------------------------------------------
+    ----------------------------------------------------------------------
 
 
     ----------------------------------------------------------------------
@@ -187,11 +195,11 @@ architecture rtl of mips is
         )
         port map(
             -- inputs
-            in1 => inst_out(20 downto 16),
-            in2 => inst_out(15 downto 11),
+            in1 => im_instruction(20 downto 16),
+            in2 => im_instruction(15 downto 11),
             sel => reg_dst,
             -- outputs
-            o => mux_out_reg_file1
+            o => rf_write_reg
         );
 
         REG_FILE : entity work.reg_file(rtl)
@@ -202,18 +210,22 @@ architecture rtl of mips is
         port map(
             -- inputs 
             clk_read => reg_clk_read,
-            read_reg1 => inst_out(25 downto 21),
-            read_reg2 => inst_out(20 downto 16),
+            read_reg1 => rf_read_reg1,
+            read_reg2 => rf_read_reg2,
 
             clk_write => reg_clk_write,
-            write_reg => mux_out_reg_file1,
-            write_data => alu_out,               --mux_out_reg_file2,
-            write_en =>  reg_write,
+            write_reg => rf_write_reg,
+            write_data => rf_write_data,
+            write_en =>  rf_reg_write,
             -- outputs
-            read_data1 => reg_file_out1,
-            read_data2 => reg_file_out2
+            read_data1 => rf_read_data1,
+            read_data2 => rf_read_data2
         );
-        
+        rf_read_reg1 <= im_instruction(25 downto 21);
+        rf_read_reg2 <= im_instruction(20 downto 16);
+        rf_write_data <= alu_result;
+        rf_reg_write <= reg_write;
+
         SIGN_EXT : entity work.sign_extend(rtl) 
         generic map(
             IMM_WIDTH => 16,
@@ -221,7 +233,7 @@ architecture rtl of mips is
         )
         port map(
             -- inputs
-            imm_const => inst_out(15 downto 0),
+            imm_const => im_instruction(15 downto 0),
             -- outputs 
             ex_imm_const => sign_extend_out
         );
@@ -240,11 +252,11 @@ architecture rtl of mips is
     )
     port map(
         -- inputs
-        in1 => reg_file_out2,
+        in1 => rf_read_data2,
         in2 => sign_extend_out,
         sel => alu_src,
         -- outputs
-        o => mux_out_alu
+        o => alu_src2
     );
     ------------------------------------
     --          ALU CONTROL           --
@@ -253,9 +265,9 @@ architecture rtl of mips is
     port map(
         -- inputs 
         alu_op => alu_op,
-        r_func => inst_out(5 downto 0),
+        r_func => im_instruction(5 downto 0),
         -- outputs
-        alu_ctr => alu_ctrl_out 
+        alu_ctr => alu_ctrl 
     );
     ------------------------------------
     ALU_OPERATIONS : entity work.alu(rtl) 
@@ -264,13 +276,14 @@ architecture rtl of mips is
     )
     port map(
         -- inputs
-        in1 => reg_file_out1,
-        in2 => mux_out_alu,
-        control => alu_ctrl_out,
+        in1 => alu_src1,
+        in2 => alu_src2,
+        control => alu_ctrl,
         -- outputs
-        alu_result => alu_out,
-        zero => alu_zero
+        alu_result => alu_result,
+        zero => alu_bcond
     );
+    alu_src1 <= rf_read_data1;
     ----------------------------------------------------------------------
 
     ----------------------------------------------------------------------
