@@ -7,6 +7,7 @@ entity data_mem is
         DATA_WIDTH : integer := 32
     );
     port(
+        clk_read,clk_write : in std_logic;
         addresse : in std_logic_vector(ADR_WIDTH-1 downto 0) := (others => '0');
         write_data : in std_logic_vector(DATA_WIDTH-1 downto 0) := (others => '0');
         read_en,write_en : in std_logic := '0';
@@ -35,22 +36,24 @@ architecture rtl of data_mem is
         (others => '0')
     );
     begin 
-        write_d : process(addresse,write_data,write_en)
+        write_d : process(clk_read)
             begin
-                if(write_en = '1') then
-                    if(addresse < std_logic_vector(to_unsigned(64,ADR_WIDTH))) then
-                        ram(to_integer(unsigned(addresse))/4) <= write_data;
-                    end if;
-                end if; 
+                if(rising_edge(clk_read)) then
+                    if(write_en = '1' and addresse < std_logic_vector(to_unsigned(64,ADR_WIDTH))) then
+                            ram(to_integer(unsigned(addresse))/4) <= write_data;
+                    end if; 
+                end if;
         end process;
-        read_d : process(addresse,read_en,ram)
+        read_d : process(clk_write)
             begin
-                if(read_en = '1') then 
-                    if(addresse < std_logic_vector(to_unsigned(64,ADR_WIDTH))) then
-                        read_data <= ram(to_integer(unsigned(addresse)/4));
-                    else
-                        read_data <= (others => '0');
-                    end if;
+                if(rising_edge(clk_write)) then 
+                    if(read_en = '1') then 
+                        if(addresse < std_logic_vector(to_unsigned(64,ADR_WIDTH))) then
+                            read_data <= ram(to_integer(unsigned(addresse)/4));
+                        else
+                            read_data <= (others => '0');
+                        end if;
+                end if;
                 end if;
         end process;
 end architecture;
