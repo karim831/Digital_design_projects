@@ -27,9 +27,9 @@ architecture rtl of alu is
                     when (0 to control'length-2 => '0') & '1' =>  -- logical or
                         result <= in1 or in2;
                     when (0 to control'length-3 => '0') & "10"=>  -- add
-                        result <= std_logic_vector(unsigned(in1)+unsigned(in2));
+                        result <= std_logic_vector(signed(in1)+signed(in2));
                     when (0 to control'length-3 => '0') & "11" =>  -- sub
-                        result <= std_logic_vector(unsigned(in1)-unsigned(in2));
+                        result <= std_logic_vector(signed(in1)-signed(in2));
                     when (0 to control'length-4 => '0') & "100"=>  -- set lower than
                         if(in1 < in2) then
                             result <= std_logic_vector(to_unsigned(1,INPUT_WIDTH));
