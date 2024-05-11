@@ -169,7 +169,7 @@ package body inst_pck is
         const_imm : integer range -2**15 to 2**15-1 := 0
     )return std_logic_vector is
         begin
-            return op_code & rs & rt & std_logic_vector(to_unsigned(const_imm,16));
+            return op_code & rs & rt & std_logic_vector(to_signed(const_imm,16));
     end function;
 
     -- J-type instruction functions initalization

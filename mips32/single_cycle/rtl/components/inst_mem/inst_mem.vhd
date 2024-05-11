@@ -19,7 +19,7 @@ architecture rtl of inst_mem is
         i_inst(addi,s0,zero,5), 
         i_inst(addi,s1,zero,6), 
         r_inst(addr,s1,s0,s1), 
-        j_inst(j,2),    
+        i_inst(bne,s1,s0,-2),    
         (others => '0'), 
         (others => '0'), 
         (others => '0'), 

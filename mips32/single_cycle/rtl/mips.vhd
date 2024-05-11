@@ -3,13 +3,11 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 entity mips is  -- mips 32_bit single_cycle_processor  
-    port(
-        clk,reset,reg_clk_read,reg_clk_write : 
-            in std_logic := '0'
-    );
-end entity;
-
-architecture rtl of mips is
+    end entity;
+    
+    architecture rtl of mips is
+    signal clk,reset,reg_clk_read,reg_clk_write : 
+        std_logic := '0';
     ----------------------------------------------------------------------
     --                              PC                                  --
     ----------------------------------------------------------------------    
@@ -73,9 +71,42 @@ architecture rtl of mips is
     signal main_adder_out,br_adder_out : std_logic_vector(31 downto 0);
     signal br_mux_out : std_logic_vector(31 downto 0);
     ----------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+begin    
+
+    ----------------------------------------------------------------------
+    --                        CLKS_GENERATing                           --
+    ----------------------------------------------------------------------
+    MAIN_CLK_GEN : process is
+    begin
+        wait for 150 ps;
+        clk <= not clk;
+    end process;
+
+    RF_READ_CLK : process is
+    begin
+        wait for 50 ps;
+        while(true) loop
+            reg_clk_read <= not reg_clk_read;
+            wait for 150 ps;
+        end loop; 
+    end process;
+
+    RF_WRITE_CLK : process is
+        begin
+            wait for 100 ps;
+            while(true) loop
+                reg_clk_write <= not reg_clk_write;
+                wait for 150 ps;
+            end loop;
+    end process;
+    ----------------------------------------------------------------------  
 
 
-    begin    
+
+----------------------------------------------------------------------
+--                      FETCH_INSTRUCTION                           --
+----------------------------------------------------------------------
 
         PC : process(clk,reset)
             begin
@@ -86,11 +117,6 @@ architecture rtl of mips is
                 end if;
                 end if;
         end process;
-
-
-    ----------------------------------------------------------------------
-    --                      FETCH_INSTRUCTION                           --
-    ----------------------------------------------------------------------
 
         MAIN_ADDER : entity work.alu(rtl) 
         generic map(
@@ -130,7 +156,7 @@ architecture rtl of mips is
             -- inputs
             in1 => main_adder_out,
             in2 => br_adder_out,
-            sel => '0',             --(branch and alu_zero),
+            sel => branch and alu_bcond,
             -- outputs
             o => br_mux_out
         );

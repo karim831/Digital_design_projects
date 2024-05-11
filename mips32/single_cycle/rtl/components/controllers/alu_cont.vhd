@@ -24,7 +24,7 @@ architecture rtl of alu_cont is
                             when (0 to alu_op'length-5 => '0') & "1000"  =>
                                 alu_ctr <= (0 to alu_ctr'length-3 => '0') & "10"; 
                             when (0 to alu_op'length-5 => '0') & "1001" =>
-                                alu_ctr <= (0 to alu_ctr'length-4 => '0') & "100"; 
+                                alu_ctr <= (0 to alu_ctr'length-4 => '0') & "110"; 
                             when others => null;
                                 alu_ctr <= (others => '0'); 
                         end case;
