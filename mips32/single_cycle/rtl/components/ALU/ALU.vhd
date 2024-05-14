@@ -44,6 +44,12 @@ architecture rtl of alu is
                         else
                             result <= (others => '0');
                         end if;
+                    when (0 to control'length-4 => '0') & "111" =>
+                        if(in1 = in2) then
+                            result <= std_logic_vector(to_unsigned(1,INPUT_WIDTH));
+                        else
+                            result <= (others => '0');
+                        end if;
                     when others => null;    
                         result <= (others => '0');
                 end case;

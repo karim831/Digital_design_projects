@@ -8,9 +8,10 @@
 -- 000101   slti    |    0      0      0        0           0      op_code    0         1         1                
 -- 000110   nori    |    0      0      0        0           0      op_code    0         1         1                
 -- 000111   lw      |    0      0      0        1           1      op_code    0         1         1                
--- 001000   sw      |    0      0      0        0           0      op_code    1         1         0               
--- 001001   bne     |    0      0      1        0           0      op_code    0         0         0                
--- 001010   j       |    0      1      0        0           0      op_code    0         0         0    
+-- 001000   sw      |    0      0      0        0           0      op_code    1         1         0 
+-- 001001   beq     |    0      0      1        0           0      op_code    0         0         0              
+-- 001010   bne     |    0      0      1        0           0      op_code    0         0         0                
+-- 001011   j       |    0      1      0        0           0      op_code    0         0         0    
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -56,6 +57,9 @@ begin
                 ctrls <= "00100" & op_code & "000";
                 
             when "001010" => 
+                ctrls <= "00100" & op_code & "000";
+                
+            when "001011" =>
                 ctrls <= "01000" & op_code & "000";
 
             when others => null;

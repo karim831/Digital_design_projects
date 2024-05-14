@@ -16,11 +16,11 @@ end entity;
 architecture rtl of inst_mem is
     type ram_type is array(0 to 15) of std_logic_vector(31 downto 0); -- <16(changeable)> 4_byte word ram
     signal ram : ram_type := (
-        i_inst(addi,s0,zero,5), 
-        i_inst(addi,s1,zero,6), 
+        i_inst(addi,s0,zero,5),
+        i_inst(sw,s0,s1,0),
+        i_inst(lw,s1,s1,0),  
+        j_inst(j,4),     
         r_inst(addr,s1,s0,s1), 
-        i_inst(bne,s1,s0,-2),    
-        (others => '0'), 
         (others => '0'), 
         (others => '0'), 
         (others => '0'), 

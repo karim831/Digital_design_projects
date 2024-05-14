@@ -117,9 +117,10 @@ package inst_pck is
     constant nori : std_logic_vector(5 downto 0) := "000110";
     constant lw   : std_logic_vector(5 downto 0) := "000111";
     constant sw   : std_logic_vector(5 downto 0) := "001000";
-    constant bne  : std_logic_vector(5 downto 0) := "001001";
+    constant beq  : std_logic_vector(5 downto 0) := "001001";
+    constant bne  : std_logic_vector(5 downto 0) := "001010";
     -- J_type op_codes
-    constant j    : std_logic_vector(5 downto 0) := "001010";
+    constant j    : std_logic_vector(5 downto 0) := "001011";
 
 
 
