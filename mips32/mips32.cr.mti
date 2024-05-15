@@ -1,0 +1,100 @@
+{D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/sim/mips_tb.vhd} {1 {vcom -work work -2008 -explicit -stats=none {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/sim/mips_tb.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity mips_tb
+-- Compiling architecture rtl of mips_tb
+-- Loading entity alu
+-- Loading entity mux
+-- Loading package inst_pck
+-- Loading entity inst_mem
+-- Loading entity main_control
+-- Loading entity reg_file
+-- Loading entity sign_extend
+-- Loading entity alu_cont
+-- Loading entity data_mem
+
+} {} {}} {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/reg_file/reg_file.vhd} {1 {vcom -work work -2008 -explicit -stats=none {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/reg_file/reg_file.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity reg_file
+-- Compiling architecture rtl of reg_file
+
+} {} {}} {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/inst_mem/inst_pck.vhd} {1 {vcom -work work -2008 -explicit -stats=none {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/inst_mem/inst_pck.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling package inst_pck
+-- Compiling package body inst_pck
+-- Loading package inst_pck
+
+} {} {}} {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/controllers/main_cont.vhd} {1 {vcom -work work -2008 -explicit -stats=none {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/controllers/main_cont.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity main_control
+-- Compiling architecture rtl of main_control
+
+} {} {}} {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/inst_mem/inst_mem.vhd} {1 {vcom -work work -2008 -explicit -stats=none {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/inst_mem/inst_mem.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Loading package inst_pck
+-- Compiling entity inst_mem
+-- Compiling architecture rtl of inst_mem
+
+} {} {}} {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/data_mem/data_mem.vhd} {1 {vcom -work work -2008 -explicit -stats=none {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/data_mem/data_mem.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity data_mem
+-- Compiling architecture rtl of data_mem
+
+} {} {}} {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/mux/mux.vhd} {1 {vcom -work work -2008 -explicit -stats=none {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/mux/mux.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity mux
+-- Compiling architecture rtl of mux
+
+} {} {}} {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/sign_extend/sign_extend.vhd} {1 {vcom -work work -2008 -explicit -stats=none {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/sign_extend/sign_extend.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity sign_extend
+-- Compiling architecture rtl of sign_extend
+
+} {} {}} {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/ALU/ALU.vhd} {1 {vcom -work work -2008 -explicit -stats=none {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/ALU/ALU.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity alu
+-- Compiling architecture rtl of alu
+
+} {} {}} {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/controllers/alu_cont.vhd} {1 {vcom -work work -2008 -explicit -stats=none {D:/Studying/Digital design/digital_design_projects/mips32/single_cycle/rtl/components/controllers/alu_cont.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity alu_cont
+-- Compiling architecture rtl of alu_cont
+
+} {} {}}
