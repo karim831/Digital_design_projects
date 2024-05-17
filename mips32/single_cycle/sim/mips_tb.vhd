@@ -6,7 +6,7 @@ entity mips_tb is  -- mips 32_bit single_cycle_processor
     end entity;
     
     architecture rtl of mips_tb is
-    signal clk,reset,reg_clk_read,reg_clk_write,mem_clk_read,mem_clk_write : 
+    signal clk,reset,reg_clk_read,reg_clk_write,mem_clk : 
         std_logic := '0';
     ----------------------------------------------------------------------
     --                              PC                                  --
@@ -81,7 +81,7 @@ begin
     ----------------------------------------------------------------------
     MAIN_CLK_GEN : process is
     begin
-        wait for 250 ps;
+        wait for 200 ps;
         clk <= not clk;
     end process;
 
@@ -90,34 +90,25 @@ begin
         wait for 50 ps;
         while(true) loop
             reg_clk_read <= not reg_clk_read;
-            wait for 250 ps;
+            wait for 200 ps;
         end loop; 
     end process;
 
-    MEM_READ_CLK : process is
+    MEMORY_CLK : process is
     begin
         wait for 100 ps;
         while(true) loop
-            mem_clk_read <= not mem_clk_read;
-            wait for 250 ps;
-        end loop;
-    end process;
-
-    MEM_WRITE_CLK : process is
-    begin
-        wait for 150 ps;
-        while(true) loop
-            mem_clk_write <= not mem_clk_write;
-            wait for 250 ps;
+            mem_clk <= not mem_clk;
+            wait for 200 ps;
         end loop;
     end process;
 
     RF_WRITE_CLK : process is
         begin
-            wait for 200 ps;
+            wait for 150 ps;
             while(true) loop
                 reg_clk_write <= not reg_clk_write;
-                wait for 250 ps;
+                wait for 200 ps;
             end loop;
     end process;
 
@@ -342,8 +333,7 @@ begin
     )
     port map(
         -- inputs
-        clk_read => mem_clk_read,
-        clk_write => mem_clk_write,
+        clk => mem_clk,
         addresse => dm_adr,
         write_data => dm_write_data,
         read_en => dm_mem_read,
